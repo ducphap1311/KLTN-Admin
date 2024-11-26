@@ -1,0 +1,23 @@
+{
+    "products": "Sản phẩm",
+    "search": "Tìm kiếm...",
+    "products_per_page": "sản phẩm mỗi trang",
+    "base_price": "Giá gốc",
+    "picture": "Hình ảnh",
+    "name": "Tên",
+    "stock": "Kho lưu trữ",
+    "id": "ID",
+    "discount_percentage": "Giảm giá (%)",
+    "actions": "Điều chỉnh",
+    "edit": "Thay đổi",
+    "delete": "Xóa",
+    "description": "Mô tả",
+    "there_is_no_products": "Sản phẩm không tồn tại",
+    "yes": "Có",
+    "no": "Không",
+    "delete_the_product": "Xóa sản phẩm",
+    "are_you_sure_to_delete_this_product": "Bạn có muốn xóa sản phẩm này?",
+    "change": "Thay đổi",
+    "delete_the_category": "Xóa loại sản phẩm",
+    "are_you_sure_to_delete_this_category": "Bạn có muốn xóa loại sản phẩm này?"
+}

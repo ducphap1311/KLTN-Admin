@@ -1,0 +1,22 @@
+{
+    "products": "Products",
+    "search": "Search topics...",
+    "products_per_page": "products per page",
+    "picture": "Picture",
+    "name": "Name",
+    "base_price": "Base Price",
+    "id": "ID",
+    "stock": "Stock",
+    "discount_percentage": "Discount Percentage",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "description": "Description",
+    "there_is_no_products": "There is no products",
+    "yes": "Yes",
+    "no": "No",
+    "delete_the_product": "Delete the product",
+    "are_you_sure_to_delete_this_product": "Are you sure to delete this product?",
+    "delete_the_category": "Delete the category",
+    "are_you_sure_to_delete_this_category": "Are you sure to delete this category?"
+}
