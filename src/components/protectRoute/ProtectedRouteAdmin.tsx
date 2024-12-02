@@ -11,7 +11,9 @@ export const ProtectedRouteAdmin = ({ children }: ProtectedRouteProps) => {
 
     const checkIsAdmin = async () => {
         const response = await getUser();
-        if (response && response.role === "ADMIN") {
+        console.log(response);
+        
+        if (response) {
             setIsAdmin(true);
         } else {
             setIsAdmin(false);

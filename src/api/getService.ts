@@ -1,13 +1,10 @@
 import * as request from "../utils/request";
 
-export const getAllProducts = async (offset: number, page = 1) => {
-    try {
-        const response = await request.get(`/products`);
-        return response.data.products;
-    } catch (error) {
-        console.log(error);
-    }
+export const getAllProducts = async () => {
+  const response = await fetch("http://localhost:5000/api/v1/products");
+  return response.json();
 };
+
 
 export const getAllCategories = async () => {
     try {
@@ -29,8 +26,16 @@ export const getCategory = async (id: string) => {
 
 export const getUser = async () => {
     try {
-        const response = await request.get("/user");
-        return response.data;
+        const response = await fetch("http://localhost:5000/api/v1/dashboard", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            }
+        });
+        const responseData = await response.json()
+
+        return responseData;
     } catch (error) {
         console.log(error);
     }
@@ -38,8 +43,9 @@ export const getUser = async () => {
 
 export const getProduct = async (id: string) => {
     try {
-        const response = await request.get(`/product/id/${id}`);
-        return response.data;
+        const response = await fetch(`http://localhost:5000/api/v1/products/${id}`);
+        const responseData = await response.json()
+        return responseData.product;
     } catch (error) {
         console.log(error);
     }

@@ -1,6 +1,6 @@
 import { Sidebar } from "../components/sidebar/Sidebar";
 import { Header } from "../components/header/AdminHeader";
-import { AddForm } from "../components/forms/AddProductForm";
+import  AddForm  from "../components/forms/AddProductForm";
 
 export const AddProductPage = () => {
     return (

@@ -1,195 +1,331 @@
-import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import React from "react";
+import { useForm, SubmitHandler, useFieldArray, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { createProduct } from "../../api/createService";
-import { getAllCategories } from "../../api/getService";
-import { toast } from "react-toastify";
+import { Button, Input, Select, Space, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { Button } from "antd";
-import { useTranslation } from "react-i18next";
 
-interface User {
-    name: string;
-    basePrice: number;
-    discountPercentage: number;
-    stock: number;
-    category: string;
-    description: string;
-}
+const { TextArea } = Input;
 
-interface Category {
-    id: string;
-    name: string;
+interface ProductForm {
+  image: string;
+  name: string;
+  price: number;
+  sizes: { size: string; quantity: number }[];
+  description: string;
+  category: string;
+  quality?: string;
 }
 
 const schema = yup
-    .object({
-        name: yup.string().required("Please input name field!"),
-        basePrice: yup
+  .object({
+    image: yup
+      .string()
+      .url("Invalid image URL")
+      .required("Image URL is required"),
+    name: yup.string().required("Product name is required"),
+    price: yup
+      .number()
+      .typeError("Price must be a positive number")
+      .positive("Price must be a positive number")
+      .required("Price is required"),
+    sizes: yup
+      .array()
+      .of(
+        yup.object({
+          size: yup.string().required("Size is required"),
+          quantity: yup
             .number()
-            .transform((value, originalValue) => {
-                return (originalValue === '' ? undefined : value)
-            })
-            .typeError("Base price must be a positive number!")
-            .positive("Base price must be a positve number!")
-            .required("Please input base price field!"),
-        discountPercentage: yup
-            .number()
-            .transform((value, originalValue) => {
-                return (originalValue === '' ? undefined : value)
-            })
-            .typeError("Discount percentage must be a positive number!")
-            .positive("Discount percentage must be a positive number!")
-            .required("Please input discount percentage field!"),
-        stock: yup
-            .number()
-            .transform((value, originalValue) => {
-                return (originalValue === '' ? undefined : value)
-            })
-            .required("Please input stock field!")
-            .typeError("Stock must be a positive number!")
-            .positive("Stock must be a positive number!"),
-        category: yup.string().required("Please choose category field!"),
-        description: yup.string().required("Please input description field!"),
-    })
-    .required();
+            .typeError("Quantity must be a positive number")
+            // .positive("Quantity must be a positive number")
+            .required("Quantity is required"),
+        })
+      .required("Size is required")
+    )
+    .required()
+      .min(1, "At least one size is required"),
+    description: yup.string().required("Description is required"),
+    category: yup
+      .string()
+      // .oneOf(["men", "women", "kids"], "Invalid category")
+      .required("Category is required"),
+    quality: yup.string().optional(),
+  })
+  // .required();
 
-export const AddForm = () => {
-    const [categories, setCategories] = React.useState<Category[]>([]);
-    const navigate = useNavigate();
-    const [loadingButton, setLoadingButton] = useState<boolean>(false);
-    const { t } = useTranslation();
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm({
-        resolver: yupResolver(schema),
-    });
-    const onSubmit: SubmitHandler<User> = async (data: User) => {
-        setLoadingButton(true);
-        await createProduct({
-            name: data.name,
-            basePrice: data.basePrice,
-            discountPercentage: data.discountPercentage,
-            stock: data.stock,
-            categories: [data.category],
-            description: data.description,
-        });
-        setTimeout(() => {
-            toast("Add product successfully!", {
-                type: "success",
-                position: "top-center",
-                draggable: true,
-                theme: "light",
-            });
-            setLoadingButton(false);
-            navigate("/");
-        }, 1000);
-    };
+const AddForm = () => {
+  const navigate = useNavigate()
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<ProductForm>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      image: "", // Khởi tạo giá trị mặc định cho image
+      name: "", // Khởi tạo giá trị mặc định cho name
+      price: 0, // Giá mặc định
+      description: "", // Mô tả mặc định
+      category: "", // Danh mục mặc định
+      quality: "", // Chất lượng mặc định
+      sizes: [{ size: "", quantity: 0 }], // Phải có ít nhất một đối tượng mặc định trong mảng sizes
+    },
+  });
 
-    const fetchCategoriesAPI = async () => {
-        const response = await getAllCategories();
-        setCategories(response);
-    };
+  
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "sizes",
+  });
 
-    useEffect(() => {
-        fetchCategoriesAPI();
-    }, []);
+  const onSubmit: SubmitHandler<ProductForm> = async (data) => {
+    console.log("Form data:", data); 
+    try {
+      // Gửi dữ liệu tới API
+      const response = await fetch("http://localhost:5000/api/v1/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        },
+        body: JSON.stringify(data),
+      });
 
-    return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="mt-[50px] xl:ml-[305px] xl:mr-[100px] dark:bg-[#233044] grid md:grid-cols-3 gap-x-10 gap-y-4 bg-white p-6 rounded-lg mx-4 sm:grid-cols-2 grid-cols-1"
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log("Product added:", result);
+
+      // Hiển thị thông báo thành công
+      message.success("Product added successfully!");
+      navigate("/")
+    } catch (error) {
+      console.error("Failed to add product:", error);
+      message.error("Failed to add product!");
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto xl:ml-[305px] xl:mr-[20px] mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-6">Add Product</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Image URL */}
+        <Controller
+        name="image"
+        control={control}
+        render={({ field }) => (
+          <div>
+            <Input {...field} placeholder="Enter image URL" />
+            {errors.image && <p className="text-red-500">{errors.image.message}</p>}
+          </div>
+        )}
+      />
+
+      {/* Product Name */}
+      <Controller
+        name="name"
+        control={control}
+        render={({ field }) => (
+          <div>
+            <Input {...field} placeholder="Enter product name" />
+            {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+          </div>
+        )}
+      />
+
+      {/* Price */}
+      <Controller
+        name="price"
+        control={control}
+        render={({ field }) => (
+          <div>
+            <Input {...field} type="number" placeholder="Enter price" />
+            {errors.price && <p className="text-red-500">{errors.price.message}</p>}
+          </div>
+        )}
+      />
+
+        {/* Sizes */}
+        {/* <div>
+          <label className="block mb-2 font-semibold">Sizes</label>
+          {fields.map((field, index) => (
+            <Space key={field.id} direction="horizontal" className="mb-2">
+              <Input
+
+                {...register(`sizes.${index}.size` as const)}
+                placeholder="Size"
+              />
+              <Input
+                {...register(`sizes.${index}.quantity` as const)}
+                type="number"
+                placeholder="Quantity"
+              />
+              <Button danger onClick={() => remove(index)}>
+                Remove
+              </Button>
+            </Space>
+          ))}
+          <Button
+            type="dashed"
+            onClick={() => append({ size: "", quantity: 0 })}
+          >
+            Add Size
+          </Button>
+          {errors.sizes && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.sizes.message as string}
+            </p>
+          )}
+        </div> */}
+          <div className="space-y-4">
+  <label className="block text-sm font-medium text-gray-700">Sizes</label>
+  {fields.map((field, index) => (
+    <div key={field.id} className="flex items-center space-x-2">
+      <Controller
+        name={`sizes.${index}.size`}
+        control={control}
+        render={({ field: sizeField }) => (
+          <div className="flex-grow">
+            <Input 
+              {...sizeField} 
+              placeholder="Size" 
+              status={errors.sizes?.[index]?.size ? "error" : ""}
+            />
+            {errors.sizes?.[index]?.size && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.sizes[index].size.message}
+              </p>
+            )}
+          </div>
+        )}
+      />
+      <Controller
+        name={`sizes.${index}.quantity`}
+        control={control}
+        render={({ field: quantityField }) => (
+          <div className="flex-grow">
+            <Input 
+              {...quantityField} 
+              type="number" 
+              placeholder="Quantity" 
+              status={errors.sizes?.[index]?.quantity ? "error" : ""}
+            />
+            {errors.sizes?.[index]?.quantity && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.sizes[index].quantity.message}
+              </p>
+            )}
+          </div>
+        )}
+      />
+      {fields.length > 1 && (
+        <Button 
+          danger 
+          type="text" 
+          onClick={() => remove(index)}
+          className="flex items-center justify-center"
         >
-            <div>
-                <label className="block mb-2 dark:text-white">{t("name")}</label>
-                <input
-                    {...register("name")}
-                    className="border-[1px] border-gray-400 w-full py-2 px-4 outline-none rounded-lg focus:border-[#303f9f] dark:bg-[#1b2635] dark:text-white "
-                />
-                <p className="text-red-500 text-sm mt-1">
-                    {errors.name && t(`${errors.name.message}`)}
-                </p>
-            </div>
-            <div>
-                <label className="block mb-2 dark:text-white">{t("base_price")}</label>
-                <input
-                    {...register("basePrice")}
-                    className="border-[1px] border-gray-400 w-full py-2 px-4 outline-none rounded-lg focus:border-[#303f9f] dark:bg-[#1b2635] dark:text-white "
-                />
-                <p className="text-red-500 text-sm mt-1">
-                    {errors.basePrice && t(`${errors.basePrice.message}`)}
-                </p>
-            </div>
-            <div>
-                <label className="block mb-2 dark:text-white">{t("discount_percentage")}</label>
-                <input
-                    {...register("discountPercentage")}
-                    className="border-[1px] border-gray-400 w-full py-2 px-4 outline-none rounded-lg focus:border-[#303f9f] dark:bg-[#1b2635] dark:text-white "
-                />
-                <p className="text-red-500 text-sm mt-1">
-                    {errors.discountPercentage &&
-                        t(`${errors.discountPercentage.message}`)}
-                </p>
-            </div>
+          Remove
+        </Button>
+      )}
+    </div>
+  ))}
+  <Button 
+    type="dashed" 
+    onClick={() => append({ size: "", quantity: 0 })}
+    block
+  >
+    Add Size
+  </Button>
+</div>
+        {/* Description */}
+        <div>
+          <label className="block mb-2 font-semibold">Description</label>
+          {/* Description */}
+<Controller
+  name="description"
+  control={control}
+  render={({ field }) => (
+    <div>
+      <TextArea 
+        {...field} 
+        placeholder="Enter product description" 
+        rows={4} 
+      />
+      {errors.description && (
+        <p className="text-red-500">
+          {errors.description.message}
+        </p>
+      )}
+    </div>
+  )}
+/>
+        </div>
 
-            <div>
-                <label className="block mb-2 dark:text-white">{t("stock")}</label>
-                <input
-                    {...register("stock")}
-                    className="border-[1px] border-gray-400 w-full py-2 px-4 outline-none rounded-lg focus:border-[#303f9f] dark:bg-[#1b2635] dark:text-white"
-                />
-                <p className="text-red-500 text-sm mt-1">
-                    {errors.stock && t(`${errors.stock.message}`)}
-                </p>
-            </div>
-            <div>
-                <label className="block mb-2 dark:text-white">{t("category")}</label>
-                <select
-                    {...register("category")}
-                    className="border-[1px] w-full border-gray-400 p-2 cursor-pointer outline-none rounded-lg focus:border-[#303f9f] dark:bg-[#1b2635] dark:text-white"
-                >
-                    <option value="">{t("select_category")}</option>
-                    {categories.length > 0 &&
-                        categories.map((cate) => {
-                            return (
-                                <option key={cate.id} value={cate.id}>
-                                    {cate.name}
-                                </option>
-                            );
-                        })}
-                </select>
-                <p className="text-red-500 text-sm mt-1">
-                    {errors.category && t(`${errors.category.message}`)}
-                </p>
-            </div>
-            <div>
-                <label className="block mb-2 dark:text-white">{t("description")}</label>
-                <input
-                    {...register("description")}
-                    className="border-[1px] w-full border-gray-400 py-2 px-4 outline-none rounded-lg focus:border-[#303f9f] dark:bg-[#1b2635] dark:text-white"
-                />
-                <p className="text-red-500 text-sm mt-1">
-                    {errors.description && t(`${errors.description.message}`)}
-                </p>
-            </div>
-            <button
-                className="border-none hover:bg-[#2c3a93] dark:bg-[#1677ff] dark:hover:bg-[#4794ff] transition-all h-fit mt-8 py-2 rounded-lg bg-[#4253be] text-white"
-                onClick={() => reset()}
-                type="button"
-            >
-                {t("reset_field")}
-            </button>
-            <Button
-                loading={loadingButton}
-                htmlType="submit"
-                className="text-base cursor-pointer border-none dark:bg-[#1677ff] dark:hover:bg-[#4794ff]  hover:bg-[#2c3a93] transition-all h-fit sm:mt-8 py-2 rounded-lg bg-[#4253be] text-white mb-6"
-            >
-                {t("add")}
-            </Button>
-        </form>
-    );
+        {/* Category */}
+        <div>
+          <label className="block mb-2 font-semibold">Category</label>
+          <Controller
+            name="category"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                className="w-full"
+                placeholder="Select a category"
+              >
+                <Select.Option value="men">Men</Select.Option>
+                <Select.Option value="women">Women</Select.Option>
+                <Select.Option value="kids">Kids</Select.Option>
+              </Select>
+            )}
+          />
+          {errors.category && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.category.message}
+            </p>
+          )}
+        </div>
+
+        {/* Quality */}
+        <div>
+          <label className="block mb-2 font-semibold">Quality</label>
+          <Controller
+  name="quality"
+  control={control}
+  render={({ field }) => (
+    <div>
+      <Select
+        {...field}
+        style={{ width: '100%' }}
+        placeholder="Select product quality"
+        status={errors.quality ? "error" : ""}
+      >
+        <Select.Option value="best seller">Best Seller</Select.Option>
+        <Select.Option value="new">Most Popular</Select.Option>
+      </Select>
+      {errors.quality && (
+        <p className="text-red-500 text-xs mt-1">
+          {errors.quality.message}
+        </p>
+      )}
+    </div>
+  )}
+/>
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <Button type="primary" htmlType="submit">
+            Add Product
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
 };
+
+export default AddForm;
