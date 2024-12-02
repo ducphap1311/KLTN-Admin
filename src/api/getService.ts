@@ -2,8 +2,8 @@ import * as request from "../utils/request";
 
 export const getAllProducts = async (offset: number, page = 1) => {
     try {
-        const response = await request.get(`/product?offset=${offset}&page=${page}`);
-        return response.data;
+        const response = await request.get(`/products`);
+        return response.data.products;
     } catch (error) {
         console.log(error);
     }
