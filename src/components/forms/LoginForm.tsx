@@ -46,10 +46,21 @@ export const LoginForm = () => {
                 setLoadingButton(false);
             }, 1000);
         } else {
-            const { accessToken, refreshToken } = response;
-            localStorage.setItem("accessToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-            checkUserOrAdmin();
+            const { token } = response;
+            localStorage.setItem("accessToken", token);
+            // localStorage.setItem("refreshToken", refreshToken);
+            if (response.role === "admin") {
+            setTimeout(() => {
+                setLoadingButton(false);
+                navigate("/");
+            }, 1000);
+        } else {
+            setTimeout(() => {
+                setLoginError(true);
+                setLoadingButton(false);
+            }, 1000);
+        }
+            // checkUserOrAdmin();
         }
     };
     
@@ -57,17 +68,17 @@ export const LoginForm = () => {
         const response = await getUser();
         const {name} = response
         localStorage.setItem("username", name);
-        if (response.role === "ADMIN") {
-            setTimeout(() => {
-                setLoadingButton(false);
-                navigate("/");
-            }, 1000);
-        } else {
-            setTimeout(() => {
-                setLoadingButton(false);
-                navigate("/user/products");
-            }, 1000);
-        }
+        // if (response.role === "admin") {
+        //     setTimeout(() => {
+        //         setLoadingButton(false);
+        //         navigate("/");
+        //     }, 1000);
+        // } else {
+        //     setTimeout(() => {
+        //         setLoginError(true);
+        //         setLoadingButton(false);
+        //     }, 1000);
+        // }
     };
 
     return (

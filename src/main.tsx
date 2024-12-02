@@ -21,9 +21,9 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: (
-            <ProtectedRouteAdmin>
+            // <ProtectedRouteAdmin>
                 <AllProductsPage />
-            </ProtectedRouteAdmin>
+            // </ProtectedRouteAdmin>
         ),
         errorElement: <ErrorPage />
     },

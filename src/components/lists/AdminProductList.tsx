@@ -46,7 +46,6 @@ export const AdminProductList = () => {
         const response = await getAllProducts(offset);
         setProducts(response);
     };
-    console.log(hasMore);
 
     const fetchMoreData = () => {
         setTimeout(async () => {
@@ -173,8 +172,17 @@ export const AdminProductList = () => {
                                                 {t("stock")}
                                             </th>
                                             <th className="p-4 text-right text-[13px] dark:text-white font-[Inter] text-[#000000de] font-medium">
-                                                {t("discount_percentage")}
+                                                {t("Category")}
                                             </th>
+                                            <th className="p-4 text-right text-[13px] dark:text-white font-[Inter] text-[#000000de] font-medium">
+                                                {t("Quality")}
+                                            </th>
+                                            <th className="p-4 text-right text-[13px] dark:text-white font-[Inter] text-[#000000de] font-medium">
+                                                {t("Description")}
+                                            </th>
+                                            {/* <th className="p-4 text-right text-[13px] dark:text-white font-[Inter] text-[#000000de] font-medium">
+                                                {t("discount_percentage")}
+                                            </th> */}
                                             <th className="text-right p-4 text-[13px] dark:text-white font-[Inter] text-[#000000de] font-medium">
                                                 {t("actions")}
                                             </th>
@@ -183,6 +191,13 @@ export const AdminProductList = () => {
                                     <tbody>
                                         {products.map(
                                             ({
+                                                images,
+                                                price,
+                                                _id,
+                                                totalAmount,
+                                                category,
+                                                quality,
+                                                description,
                                                 name,
                                                 picture,
                                                 basePrice,
@@ -191,16 +206,16 @@ export const AdminProductList = () => {
                                                 discountPercentage,
                                             }) => {
                                                 return (
-                                                    <tr key={id}>
+                                                    <tr key={_id}>
                                                         <td className="p-4 text-[13px] font-[Inter] relative">
                                                             <img
                                                                 src={`${
-                                                                    picture
-                                                                        ? `http://${picture}`
+                                                                    images[0]
+                                                                        ? `${images[0]}`
                                                                         : "https://scontent.fdad3-4.fna.fbcdn.net/v/t1.15752-9/439357193_1778350845989925_3589250648155232739_n.png?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeERBbz2t_ASCszzqy3eRlkHs83NIlWVT0-zzc0iVZVPT_ZAByUwRB_RWCYBakrvop9G_hETSC7HP4T9hkePEgr0&_nc_ohc=9rr7UZEAPFIQ7kNvgGvMiDR&_nc_ht=scontent.fdad3-4.fna&oh=03_Q7cD1QGzM18Mz3WsWipYvQs_r9D43QyAkl3GoOvghRZLEVMjwA&oe=6651E5BB"
                                                                 }`}
                                                                 alt="product"
-                                                                className="w-[100px] h-[100px] object-cover block m-auto -z-20 rounded-lg"
+                                                                className="w-[100px] h-[100px] object-contain block m-auto -z-20 rounded-lg"
                                                             />
                                                             <button
                                                                 onClick={() => {
@@ -220,17 +235,26 @@ export const AdminProductList = () => {
                                                             {name}
                                                         </td>
                                                         <td className="p-4 text-[13px] font-[Inter] dark:text-white">
-                                                            ${basePrice}
+                                                            ${price}
                                                         </td>
                                                         <td className="py-4 text-right text-[13px] font-[Inter] dark:text-white">
-                                                            {id}
+                                                            {_id}
                                                         </td>
                                                         <td className="p-4 text-[13px] text-right font-[Inter] dark:text-white">
-                                                            {stock}
+                                                            {totalAmount}
                                                         </td>
                                                         <td className="p-4 text-[13px] text-right font-[Inter] dark:text-white">
+                                                            {category}
+                                                        </td>
+                                                        <td className="p-4 text-[13px] text-right font-[Inter] dark:text-white">
+                                                            {quality}
+                                                        </td>
+                                                        <td className="p-4 text-[13px] text-right font-[Inter] dark:text-white">
+                                                            {description.slice(0, 12)}...
+                                                        </td>
+                                                        {/* <td className="p-4 text-[13px] text-right font-[Inter] dark:text-white">
                                                             {discountPercentage}
-                                                        </td>
+                                                        </td> */}
                                                         <td className="p-4 text-right text-[13px] font-[Inter] dark:text-white">
                                                             <Button
                                                                 type="primary"
