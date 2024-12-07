@@ -1,9 +1,12 @@
 import {
     CloseOutlined,
+    DropboxOutlined,
     FormOutlined,
     HeatMapOutlined,
+    MessageOutlined,
     ProductOutlined,
     ScheduleOutlined,
+    UserSwitchOutlined,
 } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
@@ -26,7 +29,7 @@ export const Sidebar = () => {
             <li className="flex items-center justify-around text-[17px] text-center border-b-[1px] border-white mb-8 py-5 bg-[#283593] dark:bg-[#233044]">
                 <div>
                     <HeatMapOutlined className="text-lg mr-3" />
-                    <span>Admin</span>
+                    <span>DH Sneaker</span>
                 </div>
                 <CloseOutlined
                     className="text-white text-xl font-bold block xl:hidden cursor-pointer opacity-80 hover:opacity-100 transition-all"
@@ -63,17 +66,67 @@ export const Sidebar = () => {
             <li>
                 <NavLink
                     onClick={() => dispatch(closeSidebar())}
-                    to="/category"
+                    to="/users"
                     className={({ isActive }) =>
                         isActive
                             ? "bg-[#2c3a93] py-3 px-8 dark:bg-[#1e293a] text-[13px] flex items-center dark:hover:bg-[#202b3c] cursor-pointer transition-all"
                             : "py-3 px-8 text-[13px] flex items-center hover:bg-[#2c3a93] dark:hover:bg-[#202b3c] cursor-pointer transition-all"
                     }
                 >
-                    <ScheduleOutlined className="text-lg mr-3" />
-                    {t('category')}
+                    {/* <ScheduleOutlined  /> */}
+                    <UserSwitchOutlined className="text-lg mr-3"/>
+                    {t('Users')}
                 </NavLink>
             </li>
+            <li>
+                <NavLink
+                    onClick={() => dispatch(closeSidebar())}
+                    to="/messages"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "bg-[#2c3a93] py-3 px-8 dark:bg-[#1e293a] text-[13px] flex items-center dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                            : "py-3 px-8 text-[13px] flex items-center hover:bg-[#2c3a93] dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                    }
+                >
+                    {/* <ScheduleOutlined  /> */}
+                    {/* <UserSwitchOutlined className="text-lg mr-3"/> */}
+                    <MessageOutlined className="text-lg mr-3"/>
+                    {t('Messages')}
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    onClick={() => dispatch(closeSidebar())}
+                    to="/orders"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "bg-[#2c3a93] py-3 px-8 dark:bg-[#1e293a] text-[13px] flex items-center dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                            : "py-3 px-8 text-[13px] flex items-center hover:bg-[#2c3a93] dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                    }
+                >
+                    {/* <ScheduleOutlined  /> */}
+                    {/* <UserSwitchOutlined className="text-lg mr-3"/> */}
+                    <DropboxOutlined className="text-lg mr-3"/> 
+                    {t('Waiting Orders')}
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    onClick={() => dispatch(closeSidebar())}
+                    to="/ship-orders"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "bg-[#2c3a93] py-3 px-8 dark:bg-[#1e293a] text-[13px] flex items-center dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                            : "py-3 px-8 text-[13px] flex items-center hover:bg-[#2c3a93] dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                    }
+                >
+                    {/* <ScheduleOutlined  /> */}
+                    {/* <UserSwitchOutlined className="text-lg mr-3"/> */}
+                    <DropboxOutlined className="text-lg mr-3"/> 
+                    {t('Ship Orders')}
+                </NavLink>
+            </li>
+            <div className="absolute bottom-2 left-0 right-0 text-xs w-fit mx-auto">© 2024 DH Sneaker. All rights reserved.</div>
         </ul>
     );
 };

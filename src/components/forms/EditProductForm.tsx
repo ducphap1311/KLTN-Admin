@@ -261,6 +261,7 @@ export const EditForm = () => {
             control={control}
             render={({ field }) => (
               <Select
+              style={{width: 100}}
                 {...field}
                 placeholder="Select quality"
                 options={[

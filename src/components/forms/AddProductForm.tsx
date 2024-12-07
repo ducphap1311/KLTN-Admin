@@ -37,7 +37,7 @@ const schema = yup
           quantity: yup
             .number()
             .typeError("Quantity must be a positive number")
-            // .positive("Quantity must be a positive number")
+            .positive("Quantity must be a positive number")
             .required("Quantity is required"),
         })
       .required("Size is required")
