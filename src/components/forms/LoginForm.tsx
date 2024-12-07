@@ -130,7 +130,7 @@ export const LoginForm = () => {
                 >
                     {t('login')}
                 </Button>
-                <div className="mt-3 text-center">
+                {/* <div className="mt-3 text-center">
                     <p className="dark:text-white">
                         {t('do_not_have_an_account')}?{" "}
                         <span
@@ -140,7 +140,7 @@ export const LoginForm = () => {
                             {t('signup')}
                         </span>
                     </p>
-                </div>
+                </div> */}
             </form>
         </div>
     );
