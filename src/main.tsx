@@ -3,7 +3,6 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AllProductsPage from "./pages/AllProductsPage.tsx";
 import { AddProductPage } from "./pages/AddProductPage.tsx";
-import { CategoryPage } from "./pages/CategoryPage.tsx";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
 import { LoginPage } from "./pages/LoginPage.tsx";
@@ -16,6 +15,12 @@ import { ProtectedRouteAccount } from "./components/protectRoute/ProtectedRouteA
 import 'react-toastify/dist/ReactToastify.css'
 import { ErrorPage } from "./pages/ErrorPage.tsx";
 import './i18n/i18n.ts'
+import { UsersPage } from "./pages/CategoryPage.tsx";
+import MessagesTable from "./pages/MessagesPage.tsx";
+import OrderPage from "./pages/OrderPage.tsx";
+import ProcessOrderPage from "./pages/ProcessOrderPage.tsx";
+import ShipOrders from "./pages/ShipOrders.tsx";
+import ShipOrderDetail from "./pages/ShipOrderDetail.tsx";
 
 const router = createBrowserRouter([
     {
@@ -36,10 +41,50 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/category",
+        path: "/users",
         element: (
             <ProtectedRouteAdmin>
-                <CategoryPage />,
+                <UsersPage />,
+            </ProtectedRouteAdmin>
+        ),
+    },
+    {
+        path: "/messages",
+        element: (
+            <ProtectedRouteAdmin>
+                <MessagesTable />,
+            </ProtectedRouteAdmin>
+        ),
+    },
+    {
+        path: "/orders",
+        element: (
+            <ProtectedRouteAdmin>
+                <OrderPage />,
+            </ProtectedRouteAdmin>
+        ),
+    },
+    {
+        path: "/ship-orders",
+        element: (
+            <ProtectedRouteAdmin>
+                <ShipOrders />,
+            </ProtectedRouteAdmin>
+        ),
+    },
+    {
+        path: "/ship-orders/:id",
+        element: (
+            <ProtectedRouteAdmin>
+                <ShipOrderDetail />,
+            </ProtectedRouteAdmin>
+        ),
+    },
+    {
+        path: "/process-order",
+        element: (
+            <ProtectedRouteAdmin>
+                <ProcessOrderPage />,
             </ProtectedRouteAdmin>
         ),
     },
