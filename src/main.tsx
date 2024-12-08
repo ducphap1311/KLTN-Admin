@@ -8,8 +8,6 @@ import { store } from "./redux/store.ts";
 import { LoginPage } from "./pages/LoginPage.tsx";
 import { EditProductPage } from "./pages/EditProductPage.tsx";
 import { SignUpPage } from "./pages/SignUpPage.tsx";
-import { UserProductsPage } from "./pages/UserProductsPage.tsx";
-import { SingleProductPage } from "./pages/SingleProductPage.tsx";
 import { ProtectedRouteAdmin } from "./components/protectRoute/ProtectedRouteAdmin.tsx";
 import { ProtectedRouteAccount } from "./components/protectRoute/ProtectedRouteAccount.tsx";
 import 'react-toastify/dist/ReactToastify.css'
