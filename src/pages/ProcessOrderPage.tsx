@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Typography, List, Avatar, Input, message as antMessage } from "antd";
+import { Card, Button, Typography, List, Avatar, Input, message as antMessage, Spin } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../components/header/AdminHeader";
 import { Sidebar } from "../components/sidebar/Sidebar";
@@ -105,7 +105,9 @@ const ProcessOrderPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Text>Loading...</Text>
+         <Header />
+        <Sidebar />
+        <Spin></Spin>
       </div>
     );
   }
@@ -136,7 +138,7 @@ const ProcessOrderPage: React.FC = () => {
               <p><Text strong>Customer Name:</Text> {order.name}</p>
               <p><Text strong>Address:</Text> {order.address}</p>
               <p><Text strong>Phone:</Text> {order.phone}</p>
-              <p><Text strong>Total Amount:</Text> ${order.orderTotal}</p>
+              <p><Text strong>Total Amount:</Text> {order.orderTotal.toLocaleString('vi-VN')} VND</p>
               <p><Text strong>Status:</Text> {order.status}</p>
               <p><Text strong>Tracking Code:</Text> {order.trackingCode || "Not Assigned"}</p>
             </div>
@@ -150,7 +152,7 @@ const ProcessOrderPage: React.FC = () => {
                     <List.Item.Meta
                       avatar={<Avatar src={item.image} />}
                       title={item.name}
-                      description={`Size: ${item.size}, Amount: ${item.amount}, Price: $${item.price}`}
+                      description={`Size: ${item.size}, Amount: ${item.amount}, Price: ${item.price.toLocaleString('vi-VN')} VND`}
                     />
                   </List.Item>
                 )}

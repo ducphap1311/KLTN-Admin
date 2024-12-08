@@ -21,7 +21,7 @@ interface Inputs {
   price: number;
   sizes: Size[];
   description: string;
-  category: string;
+  brand: string;
   quality?: string;
 }
 
@@ -51,7 +51,7 @@ const schema = yup.object({
     .required()
     .min(1, "At least one size is required"),
   description: yup.string().required("Description is required"),
-  category: yup.string().required("Category is required"),
+  brand: yup.string().required("Brand is required"),
   quality: yup.string().optional(),
 }).required();
 
@@ -74,7 +74,7 @@ export const EditForm = () => {
     price: 0,
     sizes: [{ size: "", quantity: 1 }],
     description: "",
-    category: "",
+    brand: "",
     quality: "",
     },
   });
@@ -108,7 +108,7 @@ export const EditForm = () => {
     if (id) {
       try {
         const response = await getProduct(id);
-        const { image, name, price, sizes, description, category, quality } =
+        const { image, name, price, sizes, description, brand, quality } =
           response;
         
         reset({
@@ -117,7 +117,7 @@ export const EditForm = () => {
           price,
           sizes,
           description,
-          category,
+          brand,
           quality,
         });
       } catch (error) {
@@ -231,25 +231,25 @@ export const EditForm = () => {
 
         {/* Category */}
         <div>
-          <label className="block mb-2 font-semibold">Category</label>
+          <label className="block mb-2 font-semibold">Brand</label>
           <Controller
-            name="category"
+            name="brand"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 className="w-[100px]"
-                placeholder="Select a category"
+                placeholder="Select a brand"
                 options={[
-                  { value: "men", label: "Men" },
-                  { value: "women", label: "Women" },
-                  { value: "kids", label: "Kids" },
+                  { value: "MLB", label: "MLB" },
+                  { value: "Adidas", label: "Adidas" },
+                  { value: "Crocs", label: "Crocs" },
                 ]}
               />
             )}
           />
-          {errors.category && (
-            <p className="text-red-500 text-sm">{errors.category.message}</p>
+          {errors.brand && (
+            <p className="text-red-500 text-sm">{errors.brand.message}</p>
           )}
         </div>
 
@@ -261,12 +261,12 @@ export const EditForm = () => {
             control={control}
             render={({ field }) => (
               <Select
-              style={{width: 100}}
+              style={{width: 150}}
                 {...field}
                 placeholder="Select quality"
                 options={[
                   { value: "best seller", label: "Best Seller" },
-                  { value: "new", label: "New" },
+                  { value: "most popular", label: "Most popular" },
                 ]}
               />
             )}

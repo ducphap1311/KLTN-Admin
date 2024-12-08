@@ -39,6 +39,7 @@ interface Order {
   cartItems: CartItem[];
   createdAt: string;
   trackingCode: string;
+  email: string;
 }
 
 const OrderPage: React.FC = () => {
@@ -64,7 +65,7 @@ const OrderPage: React.FC = () => {
         );
 
         const ordersWithoutTrackingCode = response.data.orders.filter(
-          (order) => !order.trackingCode
+          (order) => !order.trackingCode && (order.status === "Pending")
         );
 
         setOrders(ordersWithoutTrackingCode);
@@ -88,7 +89,8 @@ const OrderPage: React.FC = () => {
       (order) =>
         order._id.toLowerCase().includes(lowerCaseValue) ||
         order.name.toLowerCase().includes(lowerCaseValue) ||
-        order.phone.toLowerCase().includes(lowerCaseValue) // Thêm điều kiện tìm kiếm theo phone
+        order.phone.toLowerCase().includes(lowerCaseValue) ||
+        order.email.toLowerCase().includes(lowerCaseValue) // Thêm điều kiện tìm kiếm theo phone
     );
     
     setFilteredOrders(filtered);
@@ -182,72 +184,90 @@ const OrderPage: React.FC = () => {
 
   // Table columns
   const columns = [
-    {
-      title: "Order ID",
-      dataIndex: "_id",
-      key: "_id",
-      render: (text: string) => <span className="text-gray-600">{text}</span>,
+  {
+    title: "Order ID",
+    dataIndex: "_id",
+    key: "_id",
+    render: (text: string) => <span className="text-gray-600">{text}</span>,
+  },
+  {
+    title: "Customer Name",
+    dataIndex: "name",
+    key: "name",
+    width: 150,
+    render: (text: string) => <span className="text-gray-800">{text}</span>,
+  },
+  {
+    title: "Email",
+    dataIndex: "email",
+    key: "email",
+    width: 150,
+    render: (text: string) => <span className="text-gray-800">{text}</span>,
+  },
+  {
+    title: "Address",
+    dataIndex: "address",
+    key: "address",
+    render: (text: string) => (
+      <Tooltip title={text}>
+        <span className="text-gray-600 truncate block max-w-[200px]">
+          {text}
+        </span>
+      </Tooltip>
+    ),
+  },
+  {
+    title: "Phone",
+    dataIndex: "phone",
+    key: "phone",
+    width: 100,
+    render: (text: string) => <span className="text-gray-600">{text}</span>,
+  },
+  {
+    title: "Date",
+    dataIndex: "createdAt",
+    key: "createdAt",
+    render: (date: string) => {
+      const formattedDate = new Date(date).toLocaleDateString(); // Format ngày
+      return <span className="text-gray-600">{formattedDate}</span>;
     },
-    {
-      title: "Customer Name",
-      dataIndex: "name",
-      key: "name",
-      width: 150,
-      render: (text: string) => <span className="text-gray-800">{text}</span>,
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <span className="text-gray-600 truncate block max-w-[200px]">
-            {text}
-          </span>
-        </Tooltip>
-      ),
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
-      width: 100,
-      render: (text: string) => <span className="text-gray-600">{text}</span>,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string, record: Order) => (
-        <Tag color="yellow">Pending</Tag>
-        // <Select
-        //   defaultValue={status}
-        //   onChange={(value) => updateOrderStatus(record._id, value)}
-        //   className="w-40"
-        // >
-        //   <Option value="Pending">Pending</Option>
-        //   <Option value="Shipping">Shipping</Option>
-        //   <Option value="Delivered">Delivered</Option>
-        //   <Option value="Cancelled">Cancelled</Option>
-        // </Select>
-      ),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (text: any, record: Order) => (
-        <div className="flex gap-2">
-          <Button
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status: string, record: Order) => {
+      if(status === "Pending")
+      return <Tag color="yellow">{status}</Tag>
+      // <Select
+      //   defaultValue={status}
+      //   onChange={(value) => updateOrderStatus(record._id, value)}
+      //   className="w-40"
+      // >
+      //   <Option value="Pending">Pending</Option>
+      //   <Option value="Shipping">Shipping</Option>
+      //   <Option value="Delivered">Delivered</Option>
+      //   <Option value="Cancelled">Cancelled</Option>
+      // </Select>
+},
+  },
+  {
+    title: "Actions",
+    key: "actions",
+    render: (text: any, record: Order) => (
+      <div className="flex gap-2">
+        <Button
           type="default"
           onClick={() => handleProcessOrder(record._id)} // Pass only order ID
           className="bg-blue-500 text-white"
         >
           Process Order
         </Button>
-        </div>
-      ),
-    },
-  ];
+      </div>
+    ),
+  },
+];
+
 
   return (
     <div className="bg-[#f7f9fc] dark:bg-[#1b2635] min-h-screen pt-20">

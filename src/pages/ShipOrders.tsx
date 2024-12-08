@@ -18,6 +18,7 @@ interface Order {
   status: string;
   trackingCode: string;
   createdAt: string;
+  email: string;
 }
 
 const ShipOrders: React.FC = () => {
@@ -62,7 +63,8 @@ const ShipOrders: React.FC = () => {
         (order) =>
           order.trackingCode.toLowerCase().includes(lowerCaseTerm) ||
           order.name.toLowerCase().includes(lowerCaseTerm) ||
-          order.phone.toLowerCase().includes(lowerCaseTerm)
+          order.phone.toLowerCase().includes(lowerCaseTerm) ||
+          order.email.toLowerCase().includes(lowerCaseTerm)
       );
     }
 
@@ -125,6 +127,13 @@ const ShipOrders: React.FC = () => {
       title: "Customer Name",
       dataIndex: "name",
       key: "name",
+      width: 150,
+      render: (text: string) => <span className="text-gray-800">{text}</span>,
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
       width: 150,
       render: (text: string) => <span className="text-gray-800">{text}</span>,
     },
@@ -241,7 +250,7 @@ const ShipOrders: React.FC = () => {
           columns={columns}
           dataSource={filteredOrders}
           pagination={{ pageSize: 5 }}
-          loading={!orders.length}
+          // loading={}
           bordered
           className="bg-white shadow rounded-lg"
           scroll={{
