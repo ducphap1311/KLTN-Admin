@@ -2,7 +2,7 @@ import * as request from '../utils/request'
 
 export const deleteProduct = async (id: string) => {    
     try {
-        const response = await fetch(`http://localhost:5000/api/v1/products/${id}`, {
+        const response = await fetch(`https://kltn-server.vercel.app/api/v1/products/${id}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`

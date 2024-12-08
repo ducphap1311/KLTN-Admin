@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const request = axios.create({
-    baseURL: "http://localhost:5000/api/v1",
+    baseURL: "https://kltn-server.vercel.app/api/v1",
 });
 
 export const get = async (path: string) => {

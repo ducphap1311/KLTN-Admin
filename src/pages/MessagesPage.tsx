@@ -30,7 +30,7 @@ const MessagesTable: React.FC = () => {
     const fetchMessages = async () => {
       try {
         const response = await axios.get<{ message: Message[] }>(
-          "http://localhost:5000/api/v1/messages"
+          "https://kltn-server.vercel.app/api/v1/messages"
         );
         setMessages(response.data.message);
         setFilteredMessages(response.data.message);
@@ -52,7 +52,7 @@ const MessagesTable: React.FC = () => {
   const deleteMessage = async (id: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/v1/messages/${id}`
+        `https://kltn-server.vercel.app/api/v1/messages/${id}`
       );
       if (response.status === 200 || response.status === 204) {
         antMessage.success("Message deleted successfully");
@@ -72,7 +72,7 @@ const MessagesTable: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:5000/api/v1/reply-email", {
+      const response = await axios.post("https://kltn-server.vercel.app/api/v1/reply-email", {
         email: currentMessage?.email,
         message: replyContent,
       });
@@ -81,7 +81,7 @@ const MessagesTable: React.FC = () => {
         antMessage.success("Reply sent successfully");
 
         if (currentMessage) {
-          await axios.patch(`http://localhost:5000/api/v1/messages/${currentMessage._id}`, {
+          await axios.patch(`https://kltn-server.vercel.app/api/v1/messages/${currentMessage._id}`, {
             isReplied: true,
           });
 
