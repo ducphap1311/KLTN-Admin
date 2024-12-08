@@ -110,15 +110,7 @@ const router = createBrowserRouter([
         <ProtectedRouteAdmin>
             <EditProductPage />,
         </ProtectedRouteAdmin>
-    },
-    {
-        path: "/user/products/:urlName",
-        element: <SingleProductPage />,
-    },
-    {
-        path: "/user/products",
-        element: <UserProductsPage />,
-    },
+    }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
