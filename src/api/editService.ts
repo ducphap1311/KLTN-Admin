@@ -24,7 +24,7 @@ export const uploadImage = async (id: string, formData: {}) => {
 export const editProduct = async (id: string, body: any) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/v1/products/${id}`,
+      `https://kltn-server.vercel.app/api/v1/products/${id}`,
       {
           headers: {
             "Content-Type": "application/json",

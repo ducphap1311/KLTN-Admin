@@ -83,7 +83,7 @@ const AddForm = () => {
     console.log("Form data:", data); 
     try {
       // Gửi dữ liệu tới API
-      const response = await fetch("http://localhost:5000/api/v1/products", {
+      const response = await fetch("https://kltn-server.vercel.app/api/v1/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

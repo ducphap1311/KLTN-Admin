@@ -1,7 +1,7 @@
 import * as request from "../utils/request";
 
 export const getAllProducts = async () => {
-  const response = await fetch("http://localhost:5000/api/v1/products");
+  const response = await fetch("https://kltn-server.vercel.app/api/v1/products");
   return response.json();
 };
 
@@ -26,7 +26,7 @@ export const getCategory = async (id: string) => {
 
 export const getUser = async () => {
     try {
-        const response = await fetch("http://localhost:5000/api/v1/dashboard", {
+        const response = await fetch("https://kltn-server.vercel.app/api/v1/dashboard", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export const getUser = async () => {
 
 export const getProduct = async (id: string) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/v1/products/${id}`);
+        const response = await fetch(`https://kltn-server.vercel.app/api/v1/products/${id}`);
         const responseData = await response.json()
         return responseData.product;
     } catch (error) {

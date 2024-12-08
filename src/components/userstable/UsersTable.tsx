@@ -24,7 +24,7 @@ const UsersTable: React.FC = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get<{ users: User[] }>(
-        "http://localhost:5000/api/v1/allusers"
+        "https://kltn-server.vercel.app/api/v1/allusers"
       );
       setUsers(response.data.users);
       filterAndSearch(response.data.users, searchTerm, filterStatus);
@@ -80,7 +80,7 @@ const UsersTable: React.FC = () => {
 
   const handleVerifyChange = async (id: string, isVerified: boolean) => {
     try {
-      const response = await axios.patch(`http://localhost:5000/api/v1/user/${id}`, {
+      const response = await axios.patch(`https://kltn-server.vercel.app/api/v1/user/${id}`, {
         isVerified,
       });
       if (response.status === 200) {
@@ -99,7 +99,7 @@ const UsersTable: React.FC = () => {
 
   const toggleAccountStatus = async (id: string, isActive: boolean) => {
     try {
-      const response = await axios.patch(`http://localhost:5000/api/v1/user/${id}`, {
+      const response = await axios.patch(`https://kltn-server.vercel.app/api/v1/user/${id}`, {
         isActive: !isActive,
       });
       if (response.status === 200) {

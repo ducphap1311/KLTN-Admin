@@ -56,7 +56,7 @@ const OrderPage: React.FC = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get<{ orders: Order[] }>(
-          "http://localhost:5000/api/v1/allorders",
+          "https://kltn-server.vercel.app/api/v1/allorders",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -99,7 +99,7 @@ const OrderPage: React.FC = () => {
   // Delete order
   const deleteOrder = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/orders/${id}`, {
+      await axios.delete(`https://kltn-server.vercel.app/api/v1/orders/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -130,7 +130,7 @@ const OrderPage: React.FC = () => {
   const updateOrderStatus = async (id: string, status: string) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/v1/orders/${id}`,
+        `https://kltn-server.vercel.app/api/v1/orders/${id}`,
         { status },
         {
           headers: {
@@ -159,7 +159,7 @@ const OrderPage: React.FC = () => {
   const viewOrderDetails = async (order: Order) => {
     try {
       const response = await axios.get<{ order: Order }>(
-        `http://localhost:5000/api/v1/orders/${order._id}`,
+        `https://kltn-server.vercel.app/api/v1/orders/${order._id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

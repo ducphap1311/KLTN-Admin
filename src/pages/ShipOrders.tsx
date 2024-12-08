@@ -32,7 +32,7 @@ const ShipOrders: React.FC = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get<{ orders: Order[] }>(
-          "http://localhost:5000/api/v1/allorders",
+          "https://kltn-server.vercel.app/api/v1/allorders",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -95,7 +95,7 @@ const ShipOrders: React.FC = () => {
   const updateOrderStatus = async (id: string, newStatus: string) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/v1/orders/${id}`,
+        `https://kltn-server.vercel.app/api/v1/orders/${id}`,
         { status: newStatus },
         {
           headers: {

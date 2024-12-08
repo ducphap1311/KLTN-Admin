@@ -42,7 +42,7 @@ const ProcessOrderPage: React.FC = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/v1/orders/${orderId}`, {
+        const response = await fetch(`https://kltn-server.vercel.app/api/v1/orders/${orderId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
@@ -80,7 +80,7 @@ const ProcessOrderPage: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/orders/${orderId}`, {
+      const response = await fetch(`https://kltn-server.vercel.app/api/v1/orders/${orderId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
