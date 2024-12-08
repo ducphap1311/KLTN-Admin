@@ -6,6 +6,8 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "include": ["vite.config.ts"]
 }
