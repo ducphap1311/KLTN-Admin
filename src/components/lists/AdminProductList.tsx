@@ -14,7 +14,7 @@ interface Product {
   name: string;
   image: string;
   price: number;
-  category: string;
+  brand: string;
   quality: string;
   description: string;
   sizes: Size[];
@@ -26,8 +26,12 @@ export const AdminProductList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [showActive, setShowActive] = useState<boolean>(true);
   const [showDisabled, setShowDisabled] = useState<boolean>(true);
+
+  // Brand filter state
+  const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set(["MLB", "Adidas", "Crocs"]));
 
   const navigate = useNavigate();
 
@@ -38,7 +42,7 @@ export const AdminProductList = () => {
       setProducts(response.products);
 
       if (applyCurrentFilters) {
-        applyFilters(searchTerm, showActive, showDisabled, response.products);
+        applyFilters(searchTerm, showActive, showDisabled, brandFilters, response.products);
       } else {
         setFilteredProducts(response.products);
       }
@@ -75,17 +79,19 @@ export const AdminProductList = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
-    applyFilters(value, showActive, showDisabled);
+    applyFilters(value, showActive, showDisabled, brandFilters);
   };
 
   const applyFilters = (
     search: string = searchTerm,
     active: boolean = showActive,
     disabled: boolean = showDisabled,
+    brands: Set<string> = brandFilters,
     data: Product[] = products
   ) => {
     let filtered = data;
 
+    // Lọc theo trạng thái Active/Disabled
     if (!active) {
       filtered = filtered.filter((product) => !product.isActive);
     }
@@ -94,11 +100,17 @@ export const AdminProductList = () => {
       filtered = filtered.filter((product) => product.isActive);
     }
 
+    // Lọc theo thương hiệu
+    if (brands.size > 0) {
+      filtered = filtered.filter((product) => brands.has(product.brand));
+    }
+
+    // Lọc theo từ khóa tìm kiếm
     if (search) {
       filtered = filtered.filter(
         (product) =>
           product.name.toLowerCase().includes(search) ||
-          product.category.toLowerCase().includes(search) ||
+          product.brand.toLowerCase().includes(search) ||
           product.quality.toLowerCase().includes(search)
       );
     }
@@ -108,12 +120,23 @@ export const AdminProductList = () => {
 
   const handleActiveFilterChange = (e: any) => {
     setShowActive(e.target.checked);
-    applyFilters(searchTerm, e.target.checked, showDisabled);
+    applyFilters(searchTerm, e.target.checked, showDisabled, brandFilters);
   };
 
   const handleDisabledFilterChange = (e: any) => {
     setShowDisabled(e.target.checked);
-    applyFilters(searchTerm, showActive, e.target.checked);
+    applyFilters(searchTerm, showActive, e.target.checked, brandFilters);
+  };
+
+  const handleBrandFilterChange = (brand: string, checked: boolean) => {
+    const newBrandFilters = new Set(brandFilters);
+    if (checked) {
+      newBrandFilters.add(brand);
+    } else {
+      newBrandFilters.delete(brand);
+    }
+    setBrandFilters(newBrandFilters);
+    applyFilters(searchTerm, showActive, showDisabled, newBrandFilters);
   };
 
   useEffect(() => {
@@ -142,7 +165,7 @@ export const AdminProductList = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price: number) => `$${price.toFixed(2)}`,
+      render: (text: number) => <>{text.toLocaleString("vi-VN")} VND</>,
     },
     {
       title: "Sizes",
@@ -152,16 +175,17 @@ export const AdminProductList = () => {
         sizes.map((size) => `${size.size} (${size.quantity})`).join(", "),
     },
     {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand",
       width: 100,
     },
     {
       title: "Quality",
       dataIndex: "quality",
       key: "quality",
-      width: 100,
+      width: 150,
+      render: (text: string) => <>{text.charAt(0).toUpperCase() + text.slice(1)}</>,
     },
     {
       title: "Description",
@@ -179,9 +203,7 @@ export const AdminProductList = () => {
       key: "isActive",
       render: (isActive: boolean, record: Product) => (
         <Popconfirm
-          title={`Are you sure you want to ${
-            isActive ? "disable" : "activate"
-          } this product?`}
+          title={`Are you sure you want to ${isActive ? "disable" : "activate"} this product?`}
           onConfirm={() => updateProductStatus(record._id, !isActive)}
           okText="Yes"
           cancelText="No"
@@ -224,7 +246,7 @@ export const AdminProductList = () => {
         }}
       >
         <Input
-          placeholder="Search products by name"
+          placeholder="Search products by name, brand, quality"
           prefix={<SearchOutlined />}
           onChange={handleSearch}
           style={{ width: 300 }}
@@ -235,6 +257,24 @@ export const AdminProductList = () => {
           </Checkbox>
           <Checkbox checked={showDisabled} onChange={handleDisabledFilterChange}>
             Disabled
+          </Checkbox>
+          <Checkbox
+            checked={brandFilters.has("MLB")}
+            onChange={(e) => handleBrandFilterChange("MLB", e.target.checked)}
+          >
+            MLB
+          </Checkbox>
+          <Checkbox
+            checked={brandFilters.has("Adidas")}
+            onChange={(e) => handleBrandFilterChange("Adidas", e.target.checked)}
+          >
+            Adidas
+          </Checkbox>
+          <Checkbox
+            checked={brandFilters.has("Crocs")}
+            onChange={(e) => handleBrandFilterChange("Crocs", e.target.checked)}
+          >
+            Crocs
           </Checkbox>
         </div>
       </div>

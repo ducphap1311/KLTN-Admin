@@ -173,6 +173,7 @@ const UsersTable: React.FC = () => {
           cancelText="No"
         >
           <Button
+            disabled={record.role === "admin"}
             type={record.isActive ? "primary" : "default"}
             className={record.isActive ? "bg-green-500" : ""}
             danger={!record.isActive}

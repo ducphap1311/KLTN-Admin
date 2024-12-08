@@ -13,7 +13,7 @@ interface ProductForm {
   price: number;
   sizes: { size: string; quantity: number }[];
   description: string;
-  category: string;
+  brand: string;
   quality?: string;
 }
 
@@ -45,10 +45,10 @@ const schema = yup
     .required()
       .min(1, "At least one size is required"),
     description: yup.string().required("Description is required"),
-    category: yup
+    brand: yup
       .string()
-      // .oneOf(["men", "women", "kids"], "Invalid category")
-      .required("Category is required"),
+      // .oneOf(["men", "women", "kids"], "Invalid brand")
+      .required("Brand is required"),
     quality: yup.string().optional(),
   })
   // .required();
@@ -67,7 +67,7 @@ const AddForm = () => {
       name: "", // Khởi tạo giá trị mặc định cho name
       price: 0, // Giá mặc định
       description: "", // Mô tả mặc định
-      category: "", // Danh mục mặc định
+      brand: "", // Danh mục mặc định
       quality: "", // Chất lượng mặc định
       sizes: [{ size: "", quantity: 0 }], // Phải có ít nhất một đối tượng mặc định trong mảng sizes
     },
@@ -267,25 +267,25 @@ const AddForm = () => {
 
         {/* Category */}
         <div>
-          <label className="block mb-2 font-semibold">Category</label>
+          <label className="block mb-2 font-semibold">Brand</label>
           <Controller
-            name="category"
+            name="brand"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
                 className="w-full"
-                placeholder="Select a category"
+                placeholder="Select a brand"
               >
-                <Select.Option value="men">Men</Select.Option>
-                <Select.Option value="women">Women</Select.Option>
-                <Select.Option value="kids">Kids</Select.Option>
+                <Select.Option value="MLB">MLB</Select.Option>
+                <Select.Option value="Adidas">Adidas</Select.Option>
+                <Select.Option value="Crocs">Crocs</Select.Option>
               </Select>
             )}
           />
-          {errors.category && (
+          {errors.brand && (
             <p className="text-red-500 text-sm mt-1">
-              {errors.category.message}
+              {errors.brand.message}
             </p>
           )}
         </div>
