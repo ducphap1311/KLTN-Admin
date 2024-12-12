@@ -14,7 +14,7 @@ const ClientBlog = () => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/blogs");
+      const response = await axios.get("https://kltn-server.vercel.app/api/v1/blogs");
       setBlogs(response.data.data);
       setFilteredBlogs(response.data.data);
     } catch (error) {

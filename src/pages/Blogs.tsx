@@ -19,7 +19,7 @@ const Blogs = () => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/blogs");
+      const response = await axios.get("https://kltn-server.vercel.app/api/v1/blogs");
       setBlogs(response.data.data);
       setFilteredBlogs(response.data.data);
 
@@ -52,7 +52,7 @@ const Blogs = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/blogs/${id}`);
+      await axios.delete(`https://kltn-server.vercel.app/api/v1/blogs/${id}`);
       antMessage.success("Blog deleted successfully.");
       fetchBlogs();
     } catch (error) {
@@ -74,10 +74,10 @@ const Blogs = () => {
   const handleSave = async (values) => {
     try {
       if (currentBlog) {
-        await axios.put(`http://localhost:5000/api/v1/blogs/${currentBlog._id}`, values);
+        await axios.put(`https://kltn-server.vercel.app/api/v1/blogs/${currentBlog._id}`, values);
         antMessage.success("Blog updated successfully.");
       } else {
-        await axios.post("http://localhost:5000/api/v1/blogs", values);
+        await axios.post("https://kltn-server.vercel.app/api/v1/blogs", values);
         antMessage.success("Blog created successfully.");
       }
       fetchBlogs();
