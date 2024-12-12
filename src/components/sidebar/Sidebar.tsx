@@ -1,4 +1,5 @@
 import {
+    AccountBookOutlined,
     CloseOutlined,
     DropboxOutlined,
     FormOutlined,
@@ -105,6 +106,23 @@ export const Sidebar = () => {
                     {/* <UserSwitchOutlined className="text-lg mr-3"/> */}
                     <MessageOutlined className="text-lg mr-3"/>
                     {t('Messages')}
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    onClick={() => dispatch(closeSidebar())}
+                    to="/blogs"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "bg-[#2c3a93] py-3 px-8 dark:bg-[#1e293a] text-[13px] flex items-center dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                            : "py-3 px-8 text-[13px] flex items-center hover:bg-[#2c3a93] dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                    }
+                >
+                    {/* <ScheduleOutlined  /> */}
+                    {/* <UserSwitchOutlined className="text-lg mr-3"/> */}
+                    {/* <MessageOutlined className="text-lg mr-3"/> */}
+                    {/* {t('Messages')} */}
+                    <AccountBookOutlined className="text-lg mr-3" /> Blogs
                 </NavLink>
             </li>
             <li>

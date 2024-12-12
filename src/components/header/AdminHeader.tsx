@@ -46,7 +46,7 @@ export const Header = () => {
                 onClick={() => dispatch(openSidebar())}
             />
             <div className="mr-[10px] flex items-center xl:mr-[100px]  transition-colors">
-                {theme === "dark" ? (
+                {/* {theme === "dark" ? (
                     <MoonOutlined
                         className="cursor-pointer text-xl text-gray-400 hover:text-white transition-colors"
                         onClick={() => setTheme("light")}
@@ -82,7 +82,7 @@ export const Header = () => {
                     >
                         VI
                     </span>
-                </div>
+                </div> */}
                 <Popover
                     content={<a onClick={handleLogout}>{t("logout")}</a>}
                     trigger="click"

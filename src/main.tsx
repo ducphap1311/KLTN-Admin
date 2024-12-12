@@ -20,6 +20,8 @@ import ProcessOrderPage from "./pages/ProcessOrderPage.tsx";
 import ShipOrders from "./pages/ShipOrders.tsx";
 import ShipOrderDetail from "./pages/ShipOrderDetail.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import Blogs from "./pages/Blogs.tsx";
+import ClientBlog from "./pages/ClientBlog.tsx";
 
 const router = createBrowserRouter([
     {
@@ -117,6 +119,20 @@ const router = createBrowserRouter([
         element: 
         <ProtectedRouteAdmin>
             <EditProductPage />,
+        </ProtectedRouteAdmin>
+    },
+    {
+        path: "/blogs",
+        element: 
+        <ProtectedRouteAdmin>
+            <Blogs />,
+        </ProtectedRouteAdmin>
+    },
+    {
+        path: "/blogs-client",
+        element: 
+        <ProtectedRouteAdmin>
+            <ClientBlog />,
         </ProtectedRouteAdmin>
     }
 ]);
