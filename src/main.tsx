@@ -19,6 +19,7 @@ import OrderPage from "./pages/OrderPage.tsx";
 import ProcessOrderPage from "./pages/ProcessOrderPage.tsx";
 import ShipOrders from "./pages/ShipOrders.tsx";
 import ShipOrderDetail from "./pages/ShipOrderDetail.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +27,15 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRouteAdmin>
                 <AllProductsPage />
+            </ProtectedRouteAdmin>
+        ),
+        errorElement: <ErrorPage />
+    },
+    {
+        path: "/dashboard",
+        element: (
+            <ProtectedRouteAdmin>
+                <Dashboard />
             </ProtectedRouteAdmin>
         ),
         errorElement: <ErrorPage />

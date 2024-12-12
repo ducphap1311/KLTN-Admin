@@ -39,6 +39,19 @@ export const Sidebar = () => {
             <li>
                 <NavLink
                     onClick={() => dispatch(closeSidebar())}
+                    to="/dashboard"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "bg-[#2c3a93] dark:bg-[#1e293a] py-3 px-8 text-[13px] flex items-center hover:bg-[#2c3a93] dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                            : "py-3 px-8 text-[13px] flex items-center hover:bg-[#2c3a93] dark:hover:bg-[#202b3c] cursor-pointer transition-all"
+                    }
+                >
+                    <DropboxOutlined className="text-lg mr-3"/> Dashboard
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    onClick={() => dispatch(closeSidebar())}
                     to="/"
                     className={({ isActive }) =>
                         isActive

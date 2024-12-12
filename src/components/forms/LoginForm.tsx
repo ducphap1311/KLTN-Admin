@@ -52,7 +52,7 @@ export const LoginForm = () => {
             if (response.role === "admin") {
             setTimeout(() => {
                 setLoadingButton(false);
-                navigate("/");
+                navigate("/dashboard");
             }, 1000);
         } else {
             setTimeout(() => {
