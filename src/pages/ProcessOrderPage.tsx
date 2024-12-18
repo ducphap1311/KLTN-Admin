@@ -47,11 +47,14 @@ const ProcessOrderPage: React.FC = () => {
         },
         body: JSON.stringify({ trackingCode, status: "Shipping" }),
       });
+      const responseData = await response.json()
+
       if (response.ok) {
         // antMessage.success("Order updated successfully with tracking code.");
         setIsEditing(false);
         // setTrackingCode("");
         // navigate("/ship-orders");
+        setOrder(responseData.order)
       } else {
         throw new Error("Failed to update order.");
       }
@@ -212,8 +215,11 @@ const ProcessOrderPage: React.FC = () => {
                 <Text strong>Phone:</Text> {order.phone}
               </p>
               <p>
+                <Text strong>Payment status:</Text> {order.isPaid ? "Paid": "Unpaid"}
+              </p>
+              <p>
                 <Text strong>Total Amount:</Text>{" "}
-                {order.orderTotal.toLocaleString("vi-VN")} VND
+                {order.isPaid ? 0: order.orderTotal.toLocaleString("vi-VN")} VND
               </p>
               <p>
                 <Text strong>Status:</Text> {order.status}
