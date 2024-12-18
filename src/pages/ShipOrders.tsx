@@ -130,13 +130,13 @@ const ShipOrders: React.FC = () => {
       width: 150,
       render: (text: string) => <span className="text-gray-800">{text}</span>,
     },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      width: 150,
-      render: (text: string) => <span className="text-gray-800">{text}</span>,
-    },
+    // {
+    //   title: "Email",
+    //   dataIndex: "email",
+    //   key: "email",
+    //   width: 150,
+    //   render: (text: string) => <span className="text-gray-800">{text}</span>,
+    // },
     {
       title: "Address",
       dataIndex: "address",

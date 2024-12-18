@@ -199,9 +199,9 @@ const ProcessOrderPage: React.FC = () => {
               <Text strong className="block text-lg">
                 Order Information
               </Text>
-              <p>
+              {/* <p>
                 <Text strong>Order ID:</Text> {order._id}
-              </p>
+              </p> */}
               <p>
                 <Text strong>Customer Name:</Text> {order.name}
               </p>
