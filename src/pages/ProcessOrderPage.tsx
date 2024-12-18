@@ -1,80 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Typography, List, Avatar, Input, message as antMessage, Spin } from "antd";
+import {
+  Card,
+  Button,
+  Typography,
+  List,
+  Avatar,
+  Input,
+  message as antMessage,
+  Spin,
+  Modal,
+  Radio,
+} from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../components/header/AdminHeader";
 import { Sidebar } from "../components/sidebar/Sidebar";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
-
-interface CartItem {
-  _id: string;
-  image: string;
-  name: string;
-  price: number;
-  size: string;
-  amount: number;
-}
-
-interface Order {
-  _id: string;
-  name: string;
-  address: string;
-  phone: string;
-  amount: number;
-  orderTotal: number;
-  isPaid: boolean;
-  status: string;
-  cartItems: CartItem[];
-  createdAt: string;
-  trackingCode: string;
-}
 
 const ProcessOrderPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const orderId = location.state?.orderId;
 
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [trackingCode, setTrackingCode] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  // const [trackingCode, setTrackingCode] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [successModal, setSuccessModal] = useState<boolean>(false);
+  const [adminToken, setAdminToken] = useState<string>("");
+  const [viettelOrderCode, setViettelOrderCode] = useState<string>("");
+  const [numberOfCopies, setNumberOfCopies] = useState<number>(1);
 
-  useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const response = await fetch(`https://kltn-server.vercel.app/api/v1/orders/${orderId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setOrder(data.order);
-        } else {
-          throw new Error("Failed to fetch order details.");
-        }
-      } catch (error) {
-        console.error("Error fetching order details:", error);
-        antMessage.error("Failed to fetch order details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (orderId) fetchOrderDetails();
-  }, [orderId]);
-
-  const handleLinkShipping = () => {
-    window.open("https://viettelpost.vn/order/tao-don-le", "_blank");
-    setIsEditing(true);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setTrackingCode("");
-  };
-
-  const handleConfirm = async () => {
+  const handleConfirm = async (trackingCode) => {
     if (!trackingCode.trim()) {
       antMessage.error("Please enter a valid tracking code.");
       return;
@@ -89,10 +48,10 @@ const ProcessOrderPage: React.FC = () => {
         body: JSON.stringify({ trackingCode, status: "Shipping" }),
       });
       if (response.ok) {
-        antMessage.success("Order updated successfully with tracking code.");
+        // antMessage.success("Order updated successfully with tracking code.");
         setIsEditing(false);
-        setTrackingCode("");
-        navigate("/ship-orders");
+        // setTrackingCode("");
+        // navigate("/ship-orders");
       } else {
         throw new Error("Failed to update order.");
       }
@@ -102,10 +61,114 @@ const ProcessOrderPage: React.FC = () => {
     }
   };
 
+  const fetchToken = async () => {
+    const response = await fetch(
+      "https://partner.viettelpost.vn/v2/user/Login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          USERNAME: "0773450028",
+          PASSWORD: "01629014135Aa.",
+        }),
+      }
+    );
+    const responseData = await response.json();
+    setAdminToken(responseData.data.token);
+  };
+
+  useEffect(() => {
+    fetchToken();
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await fetch(
+          `https://kltn-server.vercel.app/api/v1/orders/${orderId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setOrder(data.order);
+        } else {
+          throw new Error("Failed to fetch order details.");
+        }
+      } catch (error) {
+        antMessage.error("Failed to fetch order details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (orderId) fetchOrderDetails();
+  }, [orderId]);
+
+  const handleLinkShipping = () => setShowModal(true);
+
+  const handleCreateOrder = async () => {
+    try {
+      const body = {
+        SENDER_FULLNAME: "DH Sneaker",
+        SENDER_ADDRESS: "143/3 Hai Bà Trưng Tân Đông Hiệp Dĩ An Bình Dương",
+        SENDER_PHONE: "0773450028",
+        RECEIVER_FULLNAME: order?.name,
+        RECEIVER_ADDRESS: order?.address,
+        RECEIVER_PHONE: order?.phone,
+        PRODUCT_NAME: "Giày DH Sneaker",
+        PRODUCT_QUANTITY: 1,
+        PRODUCT_PRICE: 1000000,
+        PRODUCT_WEIGHT: 250,
+        PRODUCT_HEIGHT: 25,
+        PRODUCT_TYPE: "HH",
+        ORDER_PAYMENT: 3,
+        ORDER_SERVICE: "VSL7",
+        ORDER_NOTE: "Cho xem hàng, không cho thử",
+        MONEY_COLLECTION: order?.orderTotal,
+      };
+
+      const response = await fetch(
+        "https://partner.viettelpost.vn/v2/order/createOrder",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Token: adminToken,
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (response.ok && responseData?.data?.ORDER_NUMBER) {
+        // Lưu mã đơn hàng trả về từ ViettelPost
+        setViettelOrderCode(responseData.data.ORDER_NUMBER);
+        // setTrackingCode(responseData.data.ORDER_NUMBER)
+        handleConfirm(responseData.data.ORDER_NUMBER)
+        // Đóng modal xác nhận
+        setShowModal(false);
+        // Hiển thị modal tạo đơn thành công
+        setSuccessModal(true);
+      } else {
+        antMessage.error("Failed to create ViettelPost order.");
+      }
+    } catch (error) {
+      antMessage.error("An error occurred while creating the order.");
+    }
+  };
+
+  const handleLienChange = (e: any) => {
+    setNumberOfCopies(e.target.value);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-         <Header />
+        <Header />
         <Sidebar />
         <Spin></Spin>
       </div>
@@ -133,26 +196,46 @@ const ProcessOrderPage: React.FC = () => {
           </Title>
           <Card className="shadow-lg">
             <div className="mb-4">
-              <Text strong className="block text-lg">Order Information</Text>
-              <p><Text strong>Order ID:</Text> {order._id}</p>
-              <p><Text strong>Customer Name:</Text> {order.name}</p>
-              <p><Text strong>Address:</Text> {order.address}</p>
-              <p><Text strong>Phone:</Text> {order.phone}</p>
-              <p><Text strong>Total Amount:</Text> {order.orderTotal.toLocaleString('vi-VN')} VND</p>
-              <p><Text strong>Status:</Text> {order.status}</p>
-              <p><Text strong>Tracking Code:</Text> {order.trackingCode || "Not Assigned"}</p>
+              <Text strong className="block text-lg">
+                Order Information
+              </Text>
+              <p>
+                <Text strong>Order ID:</Text> {order._id}
+              </p>
+              <p>
+                <Text strong>Customer Name:</Text> {order.name}
+              </p>
+              <p>
+                <Text strong>Address:</Text> {order.address}
+              </p>
+              <p>
+                <Text strong>Phone:</Text> {order.phone}
+              </p>
+              <p>
+                <Text strong>Total Amount:</Text>{" "}
+                {order.orderTotal.toLocaleString("vi-VN")} VND
+              </p>
+              <p>
+                <Text strong>Status:</Text> {order.status}
+              </p>
+              <p>
+                <Text strong>Tracking Code:</Text>{" "}
+                {order.trackingCode || "Not Assigned"}
+              </p>
             </div>
             <div>
-              <Text strong className="block text-lg mb-4">Cart Items</Text>
+              <Text strong className="block text-lg mb-4">
+                Cart Items
+              </Text>
               <List
                 itemLayout="horizontal"
                 dataSource={order.cartItems}
-                renderItem={(item) => (
+                renderItem={(item: any) => (
                   <List.Item>
                     <List.Item.Meta
                       avatar={<Avatar src={item.image} />}
                       title={item.name}
-                      description={`Size: ${item.size}, Amount: ${item.amount}, Price: ${item.price.toLocaleString('vi-VN')} VND`}
+                      description={`Size: ${item.size}, Amount: ${item.amount}, Price: ${item.price.toLocaleString("vi-VN")} VND`}
                     />
                   </List.Item>
                 )}
@@ -162,34 +245,64 @@ const ProcessOrderPage: React.FC = () => {
               <div className="mt-6 flex gap-4">
                 {!isEditing ? (
                   <>
-                    <Button type="primary" onClick={handleLinkShipping} className="bg-blue-500 text-white">
+                    <Button
+                      type="primary"
+                      onClick={handleLinkShipping}
+                      className="bg-blue-500 text-white"
+                    >
                       Link to Shipping Partner
                     </Button>
-                    <Button type="default" onClick={() => navigate(-1)} className="bg-gray-300">
+                    <Button
+                      type="default"
+                      onClick={() => navigate(-1)}
+                      className="bg-gray-300"
+                    >
                       Back
                     </Button>
                   </>
                 ) : (
-                  <>
-                    <Input
-                      placeholder="Enter tracking code"
-                      value={trackingCode}
-                      onChange={(e) => setTrackingCode(e.target.value)}
-                      className="w-1/3"
-                    />
-                    <Button type="primary" onClick={handleConfirm}>
-                      Confirm
-                    </Button>
-                    <Button type="default" onClick={handleCancel}>
-                      Cancel
-                    </Button>
-                  </>
+                  <></>
                 )}
               </div>
             )}
           </Card>
         </div>
       </div>
+      {/* Modal xác nhận tạo đơn */}
+      <Modal
+        title="Confirm Shipping Order"
+        visible={showModal}
+        onOk={handleCreateOrder}
+        onCancel={() => setShowModal(false)}
+        okText="Xác nhận"
+        cancelText="Quay lại"
+      >
+        <p>Bạn có chắc chắn muốn tạo đơn hàng cho ViettelPost?</p>
+      </Modal>
+
+      {/* Modal hiển thị sau khi tạo đơn thành công */}
+      
+<Modal
+  title={null}
+  visible={successModal}
+  footer={null}
+  onCancel={() => setSuccessModal(false)}
+  centered
+>
+  <div style={{ textAlign: "center", padding: "20px" }}>
+    <CheckCircleOutlined
+      style={{ fontSize: "48px", color: "#52c41a", marginBottom: "10px" }}
+    />
+    <Title level={4} style={{ marginBottom: "10px" }}>
+      Tạo đơn thành công
+    </Title>
+    <p>
+      Tạo và gửi duyệt thành công đơn hàng:{" "}
+      <strong>{viettelOrderCode}</strong>
+    </p>
+    <Button className="mt-2 bg-green-500 text-white px-5" onClick={() => navigate("/ship-orders")}>OK</Button>
+  </div>
+</Modal>
     </>
   );
 };

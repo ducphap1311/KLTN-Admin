@@ -35,6 +35,16 @@ export const AdminProductList = () => {
 
   const navigate = useNavigate();
 
+  const fetchCity = async() => {
+        const response = await fetch("https://partner.viettelpost.vn/v2/categories/listProvinceById?provinceId=")
+        const responseData = await response.json()
+        console.log(responseData);
+    }
+    
+    useEffect(() => {
+        fetchCity()
+    }, [])
+
   const fetchProducts = async (applyCurrentFilters = false) => {
     setLoading(true);
     try {
