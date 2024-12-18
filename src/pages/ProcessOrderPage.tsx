@@ -274,10 +274,10 @@ const ProcessOrderPage: React.FC = () => {
         visible={showModal}
         onOk={handleCreateOrder}
         onCancel={() => setShowModal(false)}
-        okText="Xác nhận"
-        cancelText="Quay lại"
+        okText="Confirm"
+        cancelText="Cancel"
       >
-        <p>Bạn có chắc chắn muốn tạo đơn hàng cho ViettelPost?</p>
+        <p>Are you sure to create order for ViettelPost?</p>
       </Modal>
 
       {/* Modal hiển thị sau khi tạo đơn thành công */}
@@ -294,10 +294,10 @@ const ProcessOrderPage: React.FC = () => {
       style={{ fontSize: "48px", color: "#52c41a", marginBottom: "10px" }}
     />
     <Title level={4} style={{ marginBottom: "10px" }}>
-      Tạo đơn thành công
+      Create Order Successfully
     </Title>
     <p>
-      Tạo và gửi duyệt thành công đơn hàng:{" "}
+      Create and send order successfully:{" "}
       <strong>{viettelOrderCode}</strong>
     </p>
     <Button className="mt-2 bg-green-500 text-white px-5" onClick={() => navigate("/ship-orders")}>OK</Button>
