@@ -130,7 +130,7 @@ const ProcessOrderPage: React.FC = () => {
         ORDER_PAYMENT: 3,
         ORDER_SERVICE: "VSL7",
         ORDER_NOTE: "Cho xem hàng, không cho thử",
-        MONEY_COLLECTION: order?.orderTotal,
+        MONEY_COLLECTION: order.isPaid ? 0 : order?.orderTotal,
       };
 
       const response = await fetch(
